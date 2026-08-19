@@ -14,7 +14,7 @@ const createNote = async (req, res, next) => {
     });
 
     await newNote.save();
-    return res.status(200).json({
+    return res.status(201).json({
     message: "Note created successfully",
     data : newNote
   });

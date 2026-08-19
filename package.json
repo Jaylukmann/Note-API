@@ -4,8 +4,8 @@
   "description": "A RESTful Notes API built with Node.js and Express, supporting CRUD operations for creating, reading, updating, and deleting notes.",
   "main": "app.js",
   "scripts": {
-    "start": "src/node app.js",
-    "dev": "src/nodemon app.js"
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/Jaylukmann/Note-API#readme",
   "dependencies": {
+    "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "joi": "^18.2.3",

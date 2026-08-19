@@ -1,33 +1,23 @@
-{
-  "name": "note-api",
+{ "name": "Note-API",
   "version": "1.0.0",
-  "description": "A RESTful Notes API built with Node.js and Express, supporting CRUD operations for creating, reading, updating, and deleting notes.",
-  "main": "app.js",
+  "description": "nice app",
+  "main": "src/app.js",
   "scripts": {
-    "start": "src/node app.js",
-    "dev": "src/nodemon app.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Jaylukmann/Note-API.git"
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
   },
   "keywords": [],
-  "author": "",
+  "author": {},
   "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/Jaylukmann/Note-API/issues"
-  },
-  "homepage": "https://github.com/Jaylukmann/Note-API#readme",
+  
   "dependencies": {
-    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "joi": "^18.2.3",
-    "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.9.2"
+    "mongoose": "^9.9.3"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
-  }
-}
+     "nodemon": "^3.1.14"
+  } }
+

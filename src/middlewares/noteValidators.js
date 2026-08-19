@@ -9,8 +9,8 @@ const createNoteValidator = (req, res, next) => {
   const schema = Joi.object({
     title: Joi.string().min(5).required(),
     content: Joi.string().min(30).required(),
-    category: Joi.string().optional().valid('work','school','personal','home','club'),
-    tags: Joi.array().items(Joi.string()).min(1).optional()        
+    category: Joi.string().optional().valid('work','school','personal','home','club','programming','health','finance','travel','food','entertainment'),
+    tags: Joi.array().items(Joi.string()).min(2).optional()        
    
   });
   const { error} = schema.validate(req.body);
@@ -25,7 +25,7 @@ const updateNoteValidator = (req, res, next) => {
   const schema = Joi.object({
     title: Joi.string().min(5),
     content: Joi.string().min(30),
-    category: Joi.string().valid('work','school','personal','home','club').optional(),
+    category: Joi.string().valid('work','school','personal','home','club','programming','health','finance','travel','food','entertainment').optional(),
     tags: Joi.array().items(Joi.string()) 
    
   }).min(1);

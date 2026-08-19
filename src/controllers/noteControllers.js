@@ -1,18 +1,24 @@
-const Note = require("../models/noteModel.js");
+const noteModel = require("../models/noteModel");
 
 // BONUS: Search articles by keyword using $text index
 //URL: GET /articles/search?q=keyword
 
-const postNote = async (req, res, next) => {
+const createNote = async (req, res, next) => {
   try {
-    const note = new Note({
+      const { title, content,  category, tags } = req.body;
+    const newNote = new noteModel({
       title,
       content,
       category,
-      tags,
+      tags
     });
-    await note.save();
-    res.status(201).json(note);
+
+    await newNote.save();
+    return res.status(200).json({
+    message: "Note created successfully",
+    data : newNote
+  });
+   
   } catch (error) {
     next(error);
   }
@@ -20,7 +26,7 @@ const postNote = async (req, res, next) => {
 
 // Get all notes (with pagination, sorting, search & category filtering)
 
-const getAllNote = async (req, res, next) => {
+const getAllNotes = async (req, res, next) => {
   try {
     const { page = 1, limit = 10, sort, search, q, category } = req.query;
     const query = {};
@@ -53,12 +59,12 @@ const getAllNote = async (req, res, next) => {
     const limitNum = parseInt(limit, 10);
     const skip = (pageNum - 1) * limitNum;
 
-    const notes = await Note.find(query)
+    const notes = await noteModel.find(query)
       .sort(sortOption)
       .skip(skip)
       .limit(limitNum);
 
-    const totalNotes = await Note.countDocuments(query);
+    const totalNotes = await noteModel.countDocuments(query);
     const totalPages = Math.ceil(totalNotes / limitNum);
 
     res.status(200).json({
@@ -81,7 +87,7 @@ const getAllNote = async (req, res, next) => {
 
 const getNoteById = async (req, res, next) => {
   try {
-    const note = await Note.findById(req.params.id);
+    const note = await noteModel.findById(req.params.id);
     if (!note) {
       return res.status(404).json({
         success: false,
@@ -90,6 +96,7 @@ const getNoteById = async (req, res, next) => {
     }
     res.status(200).json({
       success: true,
+      message: "Note retrieved successfully",
       data: note,
     });
   } catch (error) {
@@ -100,7 +107,7 @@ const getNoteById = async (req, res, next) => {
 // Update Note
 const updateNote = async (req, res, next) => {
   try {
-    const note = await Note.findByIdAndUpdate(req.params.id, req.body, {
+    const note = await noteModel.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
     });
@@ -114,6 +121,7 @@ const updateNote = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
+      message: "Note updated successfully",
       data: note,
     });
   } catch (error) {
@@ -124,7 +132,7 @@ const updateNote = async (req, res, next) => {
 // Delete a Note
 const deleteNote = async (req, res, next) => {
   try {
-    const note = await Note.findByIdAndDelete(req.params.id);
+    const note = await noteModel.findByIdAndDelete(req.params.id);
 
     if (!note) {
       return res.status(404).json({
@@ -143,4 +151,4 @@ const deleteNote = async (req, res, next) => {
   }
 };
 
-module.exports = { deleteNote, updateNote, getNote, getSingleNote, postNote };
+module.exports = {createNote, getAllNotes, getNoteById, updateNote, deleteNote};

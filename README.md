@@ -336,7 +336,7 @@ The searchable fields are:
 Example:
 
 ```text
-GET https://note-api-dwsx.onrender.com/api/notes/search?query=javascript
+GET https://note-api-dwsx.onrender.com/api/notes/search?q=javascript
 ```
 A search for `javascript` returns notes where the indexed fields contain the search term.
 

@@ -25,47 +25,95 @@ const createNote = async (req, res, next) => {
 };
 
 // Get all notes (with pagination, sorting, search & category filtering)
-
 const getAllNotes = async (req, res, next) => {
   try {
-    const { page = 1, limit = 10, sort, search, q, category } = req.query;
-    const query = {};
-    // Category Filtering
-    if (category) {
-      query.category = category;
-    }
-    // Text Search Filter (Supports "search" or "q")
+    const {
+      page = 1,
+      limit = 10,
+      sort,
+      search,
+      q,
+      category,
+    } = req.query;
 
+    const query = {};
+
+    // Category filtering
+    // if (category) {
+    //   query.category = category;
+    // }
+    if (category) {
+  const escapedCategory = category.replace(
+    /[.*+?^${}()|[\]\\]/g,
+    "\\$&"
+  );
+
+  query.category = {
+    $regex: `^${escapedCategory}$`,
+    $options: "i"
+  };
+}
+
+    // Text search
     const searchString = search || q;
+
     if (searchString) {
       query.$text = { $search: searchString };
     }
-    // Sorting logic (e.g. sort=-createdAt or sort=title)
+
+    // Sorting
+    const allowedSortFields = [
+      "title",
+      "createdAt",
+      "updatedAt",
+    ];
+
     let sortOption = {};
+
     if (sort) {
       const parts = sort.split(",");
+
       parts.forEach((field) => {
-        if (field.startsWith("-")) {
-          sortOption[field.substring(1)] = -1;
-        } else {
-          sortOption[field] = 1;
+        const direction = field.startsWith("-") ? -1 : 1;
+
+        const fieldName = field.startsWith("-")
+          ? field.substring(1)
+          : field;
+
+        if (allowedSortFields.includes(fieldName)) {
+          sortOption[fieldName] = direction;
         }
       });
-    } else {
-      sortOption = { createdAt: -1 }; // Default: newest first
     }
+
+    if (Object.keys(sortOption).length === 0) {
+      sortOption = { createdAt: -1 };
+    }
+
     // Pagination
-    const pageNum = parseInt(page, 10);
-    const limitNum = parseInt(limit, 10);
+    const pageNum = Math.max(
+      parseInt(page, 10) || 1,
+      1
+    );
+
+    const limitNum = Math.min(
+      Math.max(parseInt(limit, 10) || 10, 1),
+      100
+    );
+
     const skip = (pageNum - 1) * limitNum;
 
-    const notes = await noteModel.find(query)
+    const notes = await noteModel
+      .find(query)
       .sort(sortOption)
       .skip(skip)
       .limit(limitNum);
 
     const totalNotes = await noteModel.countDocuments(query);
-    const totalPages = Math.ceil(totalNotes / limitNum);
+
+    const totalPages = Math.ceil(
+      totalNotes / limitNum
+    );
 
     res.status(200).json({
       success: true,
